@@ -27,7 +27,9 @@ def extract_text(
     - collapses whitespace and removes blank lines
     - removes anything matching the `ignore` regexes (timestamps, counters, tokens...)
     """
-    soup = BeautifulSoup(html, "html.parser")
+    # lxml parses like a browser: it handles omitted end tags such as </td> and </tr>,
+    # which Python's built-in "html.parser" would nest incorrectly.
+    soup = BeautifulSoup(html, "lxml")
     for tag in soup(NOISE_TAGS):
         tag.decompose()
 

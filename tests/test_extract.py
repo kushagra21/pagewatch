@@ -79,3 +79,16 @@ def test_ignore_can_drop_trailing_columns():
         TABLE_HTML, selector=".releases-schedule-table table", ignore=[drop_support]
     )
     assert text.splitlines()[1] == "0.89.x | 2026-11-03 | 2026-12-07"
+
+
+def test_tables_without_closing_tags_are_parsed_like_a_browser():
+    # Valid HTML5 may omit </th>, </td> and </tr>; reactnative.dev does this.
+    html = (
+        '<div class="releases-schedule-table"><table><thead><tr><th>Version<th>Branch cut date'
+        "<tbody><tr><td>0.89.x<td>2026-11-03<tr><td>0.88.x<td>2026-09-07</table></div>"
+    )
+    assert extract_text(html, ".releases-schedule-table table").splitlines() == [
+        "Version | Branch cut date",
+        "0.89.x | 2026-11-03",
+        "0.88.x | 2026-09-07",
+    ]
