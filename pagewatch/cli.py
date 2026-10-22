@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Callable
+from collections.abc import Callable
 
 from pagewatch.config import ConfigError, Watch, load_watches
 from pagewatch.diff import compare
@@ -58,7 +58,8 @@ def check_watch(
             continue
         try:
             notifier.send(alert)
-        except Exception as exc:  # one broken channel must not stop the others
+        # Deliberately broad: one broken channel (network, SMTP, API) must not stop the others.
+        except Exception as exc:  # noqa: BLE001
             print(f"[error]     {watch.id}: {notifier.name} notification failed: {exc}", file=sys.stderr)
     return "changed"
 
