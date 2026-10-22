@@ -1,0 +1,29 @@
+# pagewatch configuration
+#
+# Each watch needs a unique `id` (lowercase, digits, - and _) and a `url`.
+# Optional fields:
+#   selector:  CSS selector; only text inside matching elements is compared
+#   keywords:  only alert if an ADDED line contains one of these (case-insensitive)
+#   ignore:    regexes removed from every line before comparing (timestamps, counters...)
+#   headers:   extra HTTP headers (e.g. Accept-Language)
+#   enabled:   set to false to pause a watch
+#
+# Tip: run `python -m pagewatch preview <id>` to see exactly what text a watch extracts.
+#
+# PUBLIC REPO WARNING: this file and every snapshot in snapshots/ are public.
+# Only watch public pages, and never put cookies, API keys or Authorization headers here.
+
+watches:
+  # React Native release schedule: alerts when a new version is added, or a branch cut
+  # or release date changes. Support status and blog links are ignored to avoid noise.
+  - id: react-native-releases
+    url: https://reactnative.dev/releases/overview
+    selector: .releases-schedule-table table
+    ignore:
+      - '\s*\|\s*(Support|Future|Active|End of Cycle|Unsupported)\b.*$'
+
+  # Google Play Console policy announcements: alerts when a new announcement is published.
+  # Only the titles are compared, so edits inside older announcements don't cause noise.
+  - id: google-play-announcements
+    url: https://support.google.com/googleplay/android-developer/announcements/13412212?hl=en
+    selector: .announcement__post-title
